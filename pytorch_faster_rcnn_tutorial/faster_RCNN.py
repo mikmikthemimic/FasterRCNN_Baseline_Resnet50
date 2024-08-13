@@ -9,6 +9,9 @@ from torchvision.models.detection.faster_rcnn import FasterRCNN
 from torchvision.models.detection.rpn import AnchorGenerator
 from torchvision.ops import MultiScaleRoIAlign
 
+import torchvision.models as models
+from torchvision.models.detection import FasterRCNN
+
 from pytorch_faster_rcnn_tutorial.backbone_resnet import (
     BackboneWithFPN,
     ResNetBackbones,
@@ -23,6 +26,9 @@ from pytorch_faster_rcnn_tutorial.utils import from_dict_to_boundingbox
 
 logger: logging.Logger = logging.getLogger(__name__)
 
+vgg16 = models.vgg16(weights=models.VGG16_Weights.DEFAULT, progress=False)
+vgg16_backbone = vgg16.features
+vgg16_backbone.out_channels = 512
 
 def get_anchor_generator(
     anchor_size: Optional[Tuple[Tuple[int]]] = None,
@@ -70,7 +76,7 @@ def get_faster_rcnn(
 ) -> FasterRCNN:
     """Returns the Faster-RCNN model. Default normalization: ImageNet"""
     model = FasterRCNN(
-        backbone=backbone,
+        backbone=vgg16_backbone,
         rpn_anchor_generator=anchor_generator,
         box_roi_pool=roi_pooler,
         num_classes=num_classes,
