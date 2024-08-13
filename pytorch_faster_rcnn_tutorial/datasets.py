@@ -73,7 +73,7 @@ class ObjectDetectionDataSet(Dataset):
         if x.shape[-1] == 4:
             x = rgba2rgb(x)
         
-        x = clahe(x)
+        #x = clahe(x)
 
         # Read boxes
         try:
