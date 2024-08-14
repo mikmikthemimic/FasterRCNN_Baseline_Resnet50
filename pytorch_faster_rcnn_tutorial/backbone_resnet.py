@@ -22,6 +22,7 @@ class ResNetBackbones(Enum):
     RESNET50 = "resnet50"
     RESNET101 = "resnet101"
     RESNET152 = "resnet152"
+    VGG16 = "vgg16"
 
 class BackboneWithFPN(nn.Module):
     """
@@ -99,6 +100,9 @@ def get_resnet_backbone(backbone_name: ResNetBackbones) -> torch.nn.Sequential:
     elif backbone_name == ResNetBackbones.RESNET152:
         pretrained_model = models.resnet152(pretrained=True, progress=False)
         out_channels = 2048
+    elif backbone_name == ResNetBackbones.VGG16:
+        pretrained_model = models.vgg16(pretrained=True, progress=False)
+        out_channels = 512
 
     if not pretrained_model and not out_channels:
         raise ValueError(
