@@ -52,7 +52,10 @@ def get_roi_pool(
     """Returns the ROI Pooling"""
     if featmap_names is None:
         # default for resnet with FPN
-        featmap_names = ["0", "1", "2", "3"]
+        #featmap_names = ["0", "1", "2", "3"]
+
+        # setting for faster rcnn with FPN
+        featmap_names = ["0", "1", "2", "3", "4"]
 
     roi_pooler = MultiScaleRoIAlign(
         featmap_names=featmap_names,
