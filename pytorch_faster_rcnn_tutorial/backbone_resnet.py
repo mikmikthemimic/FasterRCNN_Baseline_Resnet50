@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 import torch
 import torchvision.models as models
 from torch import nn
-from torchvision.models import resnet
+from torchvision.models import resnet, vgg
 from torchvision.models._utils import IntermediateLayerGetter
 from torchvision.ops import misc as misc_nn_ops
 from torchvision.ops.feature_pyramid_network import ExtraFPNBlock, FeaturePyramidNetwork
@@ -155,9 +155,13 @@ def resnet_fpn_backbone(
         trainable_layers (int): number of trainable (not frozen) resnet layers starting from final block.
             Valid values are between 0 and 5, with 5 meaning all backbone layers are trainable.
     """
-    backbone = resnet.__dict__[backbone_name.value](
-        pretrained=pretrained, norm_layer=norm_layer
-    )
+    backbone = None
+    if __dict__[backbone_name.value] == 'vgg16':
+        backbone = vgg.vgg16(pretrained=pretrained, norm_layer=norm_layer)
+    else:
+        backbone = resnet.__dict__[backbone_name.value](
+            pretrained=pretrained, norm_layer=norm_layer
+        )
 
     if torch.cuda.is_available():
         backbone = backbone.cuda()
