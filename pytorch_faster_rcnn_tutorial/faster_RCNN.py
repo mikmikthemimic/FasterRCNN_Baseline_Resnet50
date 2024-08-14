@@ -36,7 +36,7 @@ def get_anchor_generator(
 ) -> AnchorGenerator:
     """Returns the anchor generator."""
     if anchor_size is None:
-        anchor_size = ((16,), (32,), (64,), (128,))
+        anchor_size = ((32,), (64,), (128,), (256,), (512,))
     if aspect_ratios is None:
         aspect_ratios = ((0.5, 1.0, 2.0),) * len(anchor_size)
 
