@@ -18,6 +18,12 @@ from pytorch_faster_rcnn_tutorial.backbone_resnet import (
     get_resnet_backbone,
     get_resnet_fpn_backbone,
 )
+
+from pytorch_faster_rcnn_tutorial.backbone_vgg import(
+    vgg16_backbone,
+    vgg16_anchor_generator,
+    vgg16_get_roi_pool,
+)
 from pytorch_faster_rcnn_tutorial.metrics.enumerators import MethodAveragePrecision
 from pytorch_faster_rcnn_tutorial.metrics.pascal_voc_evaluator import (
     get_pascalvoc_metrics,
@@ -77,9 +83,9 @@ def get_faster_rcnn(
 ) -> FasterRCNN:
     """Returns the Faster-RCNN model. Default normalization: ImageNet"""
     model = FasterRCNN(
-        backbone=vgg16_backbone,
-        rpn_anchor_generator=anchor_generator,
-        box_roi_pool=roi_pooler,
+        backbone=vgg16_backbone(),
+        rpn_anchor_generator=vgg16_anchor_generator(),
+        box_roi_pool=vgg16_get_roi_pool(featmap_names=None, output_size=7, sampling_ratio=2),
         num_classes=num_classes,
         image_mean=image_mean,  # ImageNet
         image_std=image_std,  # ImageNet
