@@ -3,6 +3,8 @@ import logging
 from enum import Enum
 from typing import List, Optional, Tuple
 
+from torch import nn
+
 import torchvision.models as models
 from torchvision.models import vgg
 from torchvision.models.detection import FasterRCNN
@@ -18,7 +20,7 @@ def vgg16_backbone(backbone_name : VGGBackbones, pretrained : bool) -> torch.nn.
     print(backbone_name)
     print(VGGBackbones.VGG16)
     if backbone_name == VGGBackbones.VGG16:
-        backbone = torchvision.models.vgg16(weights=models.VGG16_Weights.DEFAULT).features
+        backbone = models.vgg16(weights=models.VGG16_Weights.DEFAULT).features
         backbone = nn.Sequential(*list(backbone)[:-1])  # Remove the last max pooling layer
         backbone.out_channels = 512
     else:
