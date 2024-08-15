@@ -84,7 +84,7 @@ def get_faster_rcnn(
 ) -> FasterRCNN:
     """Returns the Faster-RCNN model. Default normalization: ImageNet"""
     model = FasterRCNN(
-        backbone=VGGBackbones,
+        backbone=backbone,
         rpn_anchor_generator=vgg16_anchor_generator(),
         box_roi_pool=vgg16_get_roi_pool(featmap_names=None, output_size=7, sampling_ratio=2),
         num_classes=num_classes,
@@ -101,6 +101,28 @@ def get_faster_rcnn(
     model.max_size = max_size
 
     return model
+
+def get_faster_rcnn_vgg(
+    num_classes: int,
+    backbone_name: VGGBackbones,
+    min_size: int = 512,
+    max_size: int = 1024,
+    **kwargs,
+) -> FasterRCNN:
+    
+    backbone: torch.nn.Sequential = vgg16_backbone(backbone_name=backbone_name)
+    anchor_generator = vgg16_anchor_generator
+    roi_pool = get_roi_pool
+
+    return get_faster_rcnn(
+        backbone=backbone,
+        anchor_generator=anchor_generator,
+        roi_pooler=roi_pool,
+        num_classes=num_classes,
+        min_size=min_size,
+        max_size=max_size,
+        **kwargs,
+    )
 
 
 def get_faster_rcnn_resnet(
