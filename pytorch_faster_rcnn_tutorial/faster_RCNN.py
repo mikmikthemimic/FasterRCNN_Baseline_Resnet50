@@ -20,6 +20,7 @@ from pytorch_faster_rcnn_tutorial.backbone_resnet import (
 )
 
 from pytorch_faster_rcnn_tutorial.backbone_vgg import(
+    VGGBackbones,
     vgg16_backbone,
     vgg16_anchor_generator,
     vgg16_get_roi_pool,
@@ -83,7 +84,7 @@ def get_faster_rcnn(
 ) -> FasterRCNN:
     """Returns the Faster-RCNN model. Default normalization: ImageNet"""
     model = FasterRCNN(
-        backbone=vgg16_backbone(),
+        backbone=VGGBackbones,
         rpn_anchor_generator=vgg16_anchor_generator(),
         box_roi_pool=vgg16_get_roi_pool(featmap_names=None, output_size=7, sampling_ratio=2),
         num_classes=num_classes,

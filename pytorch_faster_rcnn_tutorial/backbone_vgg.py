@@ -4,6 +4,7 @@ from enum import Enum
 from typing import List, Optional, Tuple
 
 import torchvision.models as models
+from torchvision.models import vgg
 from torchvision.models.detection import FasterRCNN
 from torchvision.models.detection.rpn import AnchorGenerator
 from torchvision.ops import MultiScaleRoIAlign
@@ -13,13 +14,15 @@ logger: logging.Logger = logging.getLogger(__name__)
 class VGGBackbones(Enum):
     VGG16 = "vgg16"
 
-def vgg16_backbone(backbone_name : VGGBackbones) -> torch.nn.Sequential:
-    if backbone_name != VGGBackbones.VGG16:
-        print("Backbone does not exist.")
-    else:
-        vgg16 = models.vgg16(weights=models.VGG16_Weights.DEFAULT, progress=False)
-        backbone = vgg16.features
+def vgg16_backbone(backbone_name : VGGBackbones, pretrained : bool) -> torch.nn.Sequential:
+    print(backbone_name)
+    print(VGGBackbones.VGG16)
+    if backbone_name == VGGBackbones.VGG16:
+        backbone = torchvision.models.vgg16(weights=models.VGG16_Weights.DEFAULT).features
+        backbone = nn.Sequential(*list(backbone)[:-1])  # Remove the last max pooling layer
         backbone.out_channels = 512
+    else:
+        raise ValueError("Invalid backbone name.") 
 
     return backbone
 
