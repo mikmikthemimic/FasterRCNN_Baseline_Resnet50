@@ -10,6 +10,7 @@ from torchvision.models.detection.rpn import AnchorGenerator
 from torchvision.ops import MultiScaleRoIAlign
 
 import torchvision.models as models
+from torchvision.models import vgg
 from torchvision.models.detection import FasterRCNN
 
 from pytorch_faster_rcnn_tutorial.backbone_resnet import (
@@ -19,12 +20,6 @@ from pytorch_faster_rcnn_tutorial.backbone_resnet import (
     get_resnet_fpn_backbone,
 )
 
-from pytorch_faster_rcnn_tutorial.backbone_vgg import(
-    VGGBackbones,
-    vgg16_backbone,
-    vgg16_anchor_generator,
-    vgg16_get_roi_pool,
-)
 from pytorch_faster_rcnn_tutorial.metrics.enumerators import MethodAveragePrecision
 from pytorch_faster_rcnn_tutorial.metrics.pascal_voc_evaluator import (
     get_pascalvoc_metrics,
@@ -85,8 +80,8 @@ def get_faster_rcnn(
     """Returns the Faster-RCNN model. Default normalization: ImageNet"""
     model = FasterRCNN(
         backbone=backbone,
-        rpn_anchor_generator=vgg16_anchor_generator(),
-        box_roi_pool=vgg16_get_roi_pool(featmap_names=None, output_size=7, sampling_ratio=2),
+        rpn_anchor_generator=anchor_generator,
+        box_roi_pool=roi_pooler,
         num_classes=num_classes,
         image_mean=image_mean,  # ImageNet
         image_std=image_std,  # ImageNet
@@ -104,20 +99,25 @@ def get_faster_rcnn(
 
 def get_faster_rcnn_vgg(
     num_classes: int,
-    backbone_name: VGGBackbones,
+    pretrained: bool,
     min_size: int = 512,
     max_size: int = 1024,
     **kwargs,
 ) -> FasterRCNN:
     
-    backbone: torch.nn.Sequential = vgg16_backbone(backbone_name=backbone_name)
-    anchor_generator = vgg16_anchor_generator
-    roi_pool = get_roi_pool
+    backbone: torch.nn.Sequential = models.vgg16(weights=models.VGG16_Weights.DEFAULT).features
+    backbone.out_channels = 512
+
+    vgg_anchor_sizes=((32, 64, 128, 256, 512),)
+    vgg_aspect_ratios=((0.5, 1.0, 2.0),)
+    vgg_anchor_generator = AnchorGenerator(sizes=vgg_anchor_sizes, aspect_ratios=vgg_aspect_ratios)
+
+    vgg_roi_pool = get_roi_pool(featmap_names=['0'], output_size=7, sampling_ratio=2)
 
     return get_faster_rcnn(
         backbone=backbone,
-        anchor_generator=anchor_generator,
-        roi_pooler=roi_pool,
+        anchor_generator=vgg_anchor_generator,
+        roi_pooler=vgg_roi_pool,
         num_classes=num_classes,
         min_size=min_size,
         max_size=max_size,
