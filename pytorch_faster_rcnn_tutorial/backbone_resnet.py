@@ -62,7 +62,7 @@ class BackboneWithFPN(nn.Module):
 
     def forward(self, x):
         #b,c,h,w = x.shape
-        x = x.cuda()
+        #x = x.cuda()
         x = self.body(x)
         for key,value in x.items():
             #SE Block
@@ -180,15 +180,6 @@ def resnet_fpn_backbone(
     in_channels_list = [in_channels_stage2 * 2 ** (i - 1) for i in returned_layers]
     out_channels = 256
 
-    #modelBackbone = BackboneWithFPN(
-    #    backbone=backbone,
-    #    return_layers=return_layers,
-    #    in_channels_list=in_channels_list,
-    #    out_channels=out_channels,
-    #    extra_blocks=extra_blocks,
-    #)
-    #if torch.cuda.is_available():
-    #    modelBackbone.cuda()
     dev = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     return BackboneWithFPN(
         backbone=backbone,
