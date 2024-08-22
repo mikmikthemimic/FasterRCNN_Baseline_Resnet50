@@ -133,6 +133,7 @@ class KFoldTrainer(Trainer):
 
             res = self.test(model=model, datamodule=datamodule, verbose=False)
             results.append(res)
+            torch.cuda.empty_cache()
 
         self._ensemple_paths = paths
         return results
