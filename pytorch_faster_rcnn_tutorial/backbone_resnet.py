@@ -91,7 +91,7 @@ def get_resnet_backbone(backbone_name: ResNetBackbones) -> torch.nn.Sequential:
         pretrained_model = models.resnet34(weights=models.ResNet34_Weights.IMAGENET1K_V2, progress=False)
         out_channels = 512
     elif backbone_name == ResNetBackbones.RESNET50:
-        pretrained_model = models.resnet50(pretrained=True, progress=False)
+        pretrained_model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2, progress=False)
         out_channels = 2048
     elif backbone_name == ResNetBackbones.RESNET101:
         pretrained_model = models.resnet101(pretrained=True, progress=False)
