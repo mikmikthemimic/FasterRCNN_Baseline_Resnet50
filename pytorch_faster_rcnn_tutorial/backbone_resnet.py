@@ -62,7 +62,7 @@ class BackboneWithFPN(nn.Module):
 
     def forward(self, x):
         #b,c,h,w = x.shape
-        #x = x.cuda()
+        x = x.cuda()
         x = self.body(x)
         #for key,value in x.items():
         #    #SE Block
