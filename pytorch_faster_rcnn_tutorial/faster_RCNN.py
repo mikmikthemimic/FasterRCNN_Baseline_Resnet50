@@ -104,9 +104,10 @@ def get_faster_rcnn_vgg(
     max_size: int = 1024,
     **kwargs,
 ) -> FasterRCNN:
-    
+    dev = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     backbone: torch.nn.Sequential = models.vgg16(weights=models.VGG16_Weights.DEFAULT).features
     backbone.out_channels = 512
+    backbone.to(dev)
 
     vgg_anchor_sizes=((32, 64, 128, 256, 512),)
     vgg_aspect_ratios=((0.5, 1.0, 2.0),)
@@ -122,7 +123,7 @@ def get_faster_rcnn_vgg(
         min_size=min_size,
         max_size=max_size,
         **kwargs,
-    )
+    ).to(dev)
 
 
 def get_faster_rcnn_resnet(
